@@ -1,18 +1,23 @@
 -module(index_handler).
 
--behavior(cowboy_http_handler).
+-behavior(cowboy_websocket_handler).
 
--export([init/3, handle/2, terminate/3]).
+-export([init/3, websocket_init/3, websocket_handle/3, websocket_info/3, websocket_terminate/3]).
 
 
-init(_Type, Req, _Opts) ->
+init({tcp, http}, Req, Opts) ->
+    {upgrade, protocol, cowboy_websocket}.
+
+websocket_init(_TransportName, Req, _Opts) ->
     {ok, Req, undefined_state}.
  
-handle(Req, State) ->
-    {ok, Req2} = cowboy_req:reply(200, [
-        {<<"content-type">>, <<"text/plain">>}
-    ], <<"Ok.">>, Req),
-    {ok, Req2, State}.
+websocket_handle({text, _Msg}, Req, State) ->
+    {ok, Req, State};
+websocket_handle(_Data, Req, State) ->
+    {ok, Req, State}.
+
+websocket_info(_Info, Req, State) ->
+    {ok, Req, State}.
  
-terminate(_Reason, _Req, _State) ->
+websocket_terminate(_Reason, _Req, _State) ->
     ok.

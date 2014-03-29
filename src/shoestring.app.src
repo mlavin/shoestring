@@ -1,13 +1,13 @@
 {application, shoestring,
  [
   {description, ""},
-  {vsn, "1"},
-  {registered, []},
+  {vsn, "0.1.0"},
+  {registered, [shoestring_sup]},
   {applications, [
-                  kernel,
-                  stdlib,
-                  cowboy
-                 ]},
-  {mod, { shoestring_app, []}},
+    kernel,
+    stdlib,
+    cowboy
+  ]},
+  {mod, {shoestring_app, []}},
   {env, [{http_port, 8080}]}
  ]}.

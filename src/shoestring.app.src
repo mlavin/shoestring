@@ -5,8 +5,9 @@
   {registered, []},
   {applications, [
                   kernel,
-                  stdlib
+                  stdlib,
+                  cowboy
                  ]},
   {mod, { shoestring_app, []}},
-  {env, []}
+  {env, [{http_port, 8080}]}
  ]}.

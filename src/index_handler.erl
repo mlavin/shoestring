@@ -39,8 +39,13 @@ websocket_handle({text, <<"JOIN ", Room/binary>>}, Req, State ) ->
             end
     end;
 websocket_handle({text, Data}, Req, State) ->
-    relay_message(Data, State#state.room),
-    {ok, Req, State};
+    case State#state.room of
+        undefined ->
+            {ok, Req, State};
+        _ ->
+            relay_message(Data, State#state.room),
+            {ok, Req, State}
+    end;
 websocket_handle(_Data, Req, State) ->
     {ok, Req, State}.
 

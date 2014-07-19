@@ -23,7 +23,7 @@ websocket_handle({text, <<"CREATE">>}, Req, State) ->
     ok = pg2:join(Room, self()),
     NewState = State#state{room=Room},
     {reply, {text, <<"CREATED ", Room/binary>>}, Req, NewState};
-websocket_handle({text, <<"JOIN ", Room/binary>>}, Req, State ) ->
+websocket_handle({text, <<"JOIN ", Room/binary>>}, Req, State) ->
     case pg2:get_members(Room) of
         {error, _} ->
             {reply, {text, <<"INVALID ROOM ", Room/binary>>}, Req, State};

@@ -6,11 +6,13 @@
 
 -record(state, {room=undefined}).
 
+-include_lib("eunit/include/eunit.hrl").
+
 %% ===================================================================
 %% Websocket API
 %% ===================================================================
 
-init({tcp, http}, Req, Opts) ->
+init({tcp, http}, _Req, _Opts) ->
     {upgrade, protocol, cowboy_websocket}.
 
 websocket_init(_TransportName, Req, _Opts) ->
@@ -56,7 +58,7 @@ websocket_terminate(_Reason, _Req, _State) ->
     ok.
 
 %% ===================================================================
-%% Interanl functions
+%% Internal functions
 %% ===================================================================
 
 new_room_name() ->
@@ -65,3 +67,21 @@ new_room_name() ->
 
 relay_message(Msg, Room) ->
     [Pid ! <<Msg/binary>> || Pid <- pg2:get_members(Room) -- [self()]].
+
+
+%% ===================================================================
+%% Tests
+%% ===================================================================
+
+-ifdef(TEST).
+
+new_room_name_type_test() ->
+    Name = new_room_name(),
+    ?assert(is_binary(Name)).
+
+new_room_name_unique_test() ->
+    Name = new_room_name(),
+    Other = new_room_name(),
+    ?assertNotEqual(Name, Other).
+
+-endif.
